@@ -35,8 +35,38 @@ class RootFactory(object):
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
+class Allergy(Base):
+    __tablename__ = 'allergy'
+    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
+    allergy = Column(Text, primary_key=True)
+    def __init__(self,user,allergy):
+        self.user = user
+        self.allergy = allergy
 
-
+class Director(Base):
+    __tablename__ = 'medical_director'
+    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
+    def __init__(self,user,):
+        self.user = user
+        
+class Medic(Base):
+    __tablename__ = 'medic'
+    user = Column(Text, ForeignKey('user.login'), primary_key=True)
+    training_level = Column(Text)
+    cert_number = Column(Text)
+    def __init__(self,user,training_level,cert_number):
+        self.user = user
+        self.training_level = training_level
+        self.cert_number = cert_number
+        
+class MedicalHistory(Base):
+    __tablename__ = 'medicalhistory'
+    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
+    event = Column(Text, primary_key=True)
+    def __init__(self,user,event):
+        self.user = user
+        self.event = event
+        
 class Page(Base):
     """ The SQLAlchemy declarative model class for a Page object. """
     __tablename__ = 'pages'
@@ -46,74 +76,54 @@ class Page(Base):
 
     def __init__(self, name, data):
         self.name = name
-        self.data = data
+        self.data = data        
 
-class Users(Base):
+class Patient(Base):
+    __tablename__ = 'patient'
+    user = Column(Text, ForeignKey('user.login'), primary_key=True)
+    rfidtag  = Column(Text, unique=True)
+
+    #pastmedicalhistory 
+    #allergies
+    primary_physician = Column(Text)
+    def __init__(self, user,rfidtag, primary_physician):
+        self.user = user
+        self.rfidtag = rfidtag
+        self.primary_physician = primary_physician
+
+class User(Base):
     __tablename__ = 'user'
     login     = Column(Text, primary_key=True)
     password  = Column(Text)
-    firstname = Column(Text)
-    middlename = Column(Text)
-    lastname  = Column(Text)
+    first_name = Column(Text)
+    middle_name = Column(Text)
+    last_name  = Column(Text)
     gender    = Column(Text)
     birthday  = Column(Date)
-    primarylanguage   = Column(Text)
-    secondarylanguage = Column(Text)
-    socialsecurity = Column(Text)
+    primary_language   = Column(Text)
+    secondary_language = Column(Text)
+    social_security = Column(Integer)
     phone = Column(Text)
     street = Column(Text)
     city =Column(Text)
     state = Column(Text)
     zipcode = Column(Integer) 
+    email = Column(Text)
        
-    def __init__(self, login, password, lastname, firstname, gender, birthday, primarylanguage, secondarylanguage, socialsecurity, phone,street,city,state,zipcode):
+    def __init__(self, login, password, first_name, middle_name, last_name, gender, birthday, primary_language, secondary_language, social_security, phone,street,city,state,zipcode,email):
         self.login = login
         self.password = password
-        self.lastname = lastname
-        self.firstname = firstname
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
         self.gender = gender
         self.birthday = birthday
-        self.primarylanguage = primarylanguage
-        self.secondarylanguage = secondarylanguage
-        self.socialsecurity = socialsecurity
+        self.primary_language = primary_language
+        self.secondary_language = secondary_language
+        self.social_security = social_security
         self.phone = phone
         self.street = street
         self.city = city
         self.state = state
         self.zipcode = zipcode
-
-class Medic(Base):
-    __tablename__ = 'medic'
-    user = Column(Text, ForeignKey('user.login'), primary_key=True)
-    traininglevel = Column(Text)
-    certnumber = Column(Text)
-    def __init__(self,user,traininglevel,certnumber):
-        self.user = user
-        self.traininglevel = traininglevel
-        self.certnumber = certnumber
-        
-class Patient(Base):
-    __tablename__ = 'patient'
-    user = Column(Text, ForeignKey('user.login'), primary_key=True)
-    #pastmedicalhistory 
-    #allergies
-    physician = Column(Text)
-    def __init__(self, user, physician):
-        self.user = user
-        self.physician = physician
-    
-class Allergy(Base):
-    __tablename__ = 'allergy'
-    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
-    allergy = Column(Text, primary_key=True)
-    def __init__(self,user,allergy):
-        self.user = user
-        self.allergy = allergy
-        
-class MedicalHistory(Base):
-    __tablename__ = 'medicalhistory'
-    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
-    event = Column(Text, primary_key=True)
-    def __init__(self,user,event):
-        self.user = user
-        self.event = event
+        self.email = email

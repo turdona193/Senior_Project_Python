@@ -60,6 +60,11 @@ def main(global_config, **settings):
     config.add_route('admin_edit_patient','/admin_edit_patient')
     config.add_route('admin_edit_medic','/admin_edit_medic')
     config.add_route('admin_edit_director','/admin_edit_director')
+    config.add_route('view_all_users','/view_all_users')
+    config.add_route('view_all_patients','/view_all_patients')
+    config.add_route('view_all_medics','/view_all_medics')
+    config.add_route('view_all_directors','/view_all_directors')
+
 
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')

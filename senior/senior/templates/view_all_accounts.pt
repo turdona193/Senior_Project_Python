@@ -1,0 +1,18 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+	    <table>
+	   		 <tr>
+				<div tal:repeat = "header headers">
+					<td>${header}</td>
+				</div>
+			</tr>
+	        <div tal:repeat="person all_users">
+	        	<tr>
+					<div tal:repeat = "header headers">
+						<td>${getattr(person,header)}</td>
+					</div>
+	        	</tr>
+	    	</div>
+	    </table>  
+    </div>
+</div>

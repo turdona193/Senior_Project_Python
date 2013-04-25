@@ -29,13 +29,17 @@ from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
     Page,
-    
-    Users,
+    User,
+    Patient,
+    Medic,
+    Director,
+    Allergy,
+    MedicalHistory,
     )
 
 
 @view_config(route_name='home', renderer='templates/home.pt')
-def Home(request):
+def home(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='Home').first()
 
@@ -43,7 +47,7 @@ def Home(request):
                 logged_in=authenticated_userid(request))
     
 @view_config(route_name='about_us', renderer='templates/home.pt')
-def AboutUs(request):
+def about_us(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='User').first()
 
@@ -53,7 +57,7 @@ def AboutUs(request):
                 logged_in=authenticated_userid(request))
     
 @view_config(route_name='contact_us', renderer='templates/home.pt')
-def ContactUs(request):
+def contact_us(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='Contact').first()
 
@@ -64,7 +68,7 @@ def ContactUs(request):
     
 
 @view_config(route_name='why_create_user', renderer='templates/home.pt')
-def WhyCreateUser(request):
+def why_create_user(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='User').first()
 
@@ -74,31 +78,46 @@ def WhyCreateUser(request):
                 logged_in=authenticated_userid(request))
     
 @view_config(route_name='new_user', renderer='templates/newuser.pt')
-def CreateUser(request):
+def create_user(request):
     main = get_renderer('templates/template.pt').implementation()
+    message = ''
     if 'form.submitted' in request.params:
-        new_user = Users('','','','','','','','','','','','','','','','','','','')
-        new_user.username = request.params['username']
-        new_user.password = request.params['password']
-        new_user.firstname = request.params['firstname']
-        new_user.middlename = request.params['middlename']
-        new_user.lastname = request.params['lastname']
-        new_user.birthday = datetime.date(int(request.params['year']),int(request.params['month']),int(request.params['day']))
-        new_user.gender = request.params['gender']
-        new_user.street = request.params['street']
-        new_user.city = request.params['city']
-        new_user.state = request.params['state']
-        new_user.zipcode = request.params['zipcode']
-        new_user.phonenumber = request.params['phonenumber']
-        new_user.email = request.params['email']
-        DBSession.add(new_user)
+        username_entered = request.params['username']
+        exists = DBSession.query(User).filter(User.login == username_entered).count()
+        if username_entered and not exists:
+            new_user = User(login = username_entered,
+                            password = request.params['password'],
+                            first_name = request.params['firstname'],
+                            middle_name = request.params['middlename'],
+                            last_name = request.params['lastname'],
+                            gender = request.params['gender'],
+                            birthday = datetime.date(int(request.params['year']),int(request.params['month']),int(request.params['day'])),
+                            primary_language = request.params['primary_langauge'],
+                            secondary_language = request.params['secondary_langauge'],
+                            social_security = request.params['social_security'],
+                            street = request.params['street'],
+                            city = request.params['city'],
+                            state = request.params['state'],
+                            zipcode = request.params['zipcode'],
+                            phone = request.params['phonenumber'],
+                            email = request.params['email'],
+                            )
+            DBSession.add(new_user)
+        elif not username_entered:
+            message = 'Please enter a Login'
+        elif exists:
+            message = 'Login exists, please enter a different Login: {}'.format(exists)
+
     
     return dict(title='Why Create a User Account',
-                main=main ,
+                main=main,
+                message=message,
                 logged_in=authenticated_userid(request))
     
+
+    
 @view_config(route_name='why_register_patient', renderer='templates/home.pt')
-def WhyRegisterPatient(request):
+def why_register_patient(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='Patient').first()
 
@@ -108,7 +127,7 @@ def WhyRegisterPatient(request):
                 logged_in=authenticated_userid(request))
     
 @view_config(route_name='why_register_medic', renderer='templates/home.pt')
-def WhyRegisterMedic(request):
+def why_register_medic(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='Medic').first()
 
@@ -118,7 +137,7 @@ def WhyRegisterMedic(request):
                 logged_in=authenticated_userid(request))
     
 @view_config(route_name='why_register_director', renderer='templates/home.pt')
-def WhyRegisterDirector(request):
+def why_register_director(request):
     main = get_renderer('templates/template.pt').implementation()
     page = DBSession.query(Page).filter_by(name='Director').first()
 
@@ -127,7 +146,55 @@ def WhyRegisterDirector(request):
                 page = page,
                 logged_in=authenticated_userid(request))
     
+@view_config(route_name='view_all_users', renderer='templates/view_all_accounts.pt')
+def view_all_users(request):
+    main = get_renderer('templates/template.pt').implementation()
+    all_users = DBSession.query(User).all()
+    headers = [column.name for column in User.__table__.columns]
     
+    return dict(title='View All Users',
+                main=main ,
+                all_users = all_users,
+                headers = headers,
+                logged_in=authenticated_userid(request))
+    
+@view_config(route_name='view_all_patients', renderer='templates/view_all_accounts.pt')
+def view_all_patients(request):
+    main = get_renderer('templates/template.pt').implementation()
+    all_users = DBSession.query(Patient).all()
+    headers = [column.name for column in Patient.__table__.columns]
+    
+    return dict(title='View All Patients',
+                main=main ,
+                all_users = all_users,
+                headers = headers,
+                logged_in=authenticated_userid(request))
+    
+@view_config(route_name='view_all_medics', renderer='templates/view_all_accounts.pt')
+def view_all_medics(request):
+    main = get_renderer('templates/template.pt').implementation()
+    all_users = DBSession.query(Medic).all()
+    headers = [column.name for column in Medic.__table__.columns]
+
+    
+    return dict(title='View All Medics',
+                main=main ,
+                all_users = all_users,
+                headers = headers,
+                logged_in=authenticated_userid(request))
+    
+@view_config(route_name='view_all_directors', renderer='templates/view_all_accounts.pt')
+def view_all_directors(request):
+    main = get_renderer('templates/template.pt').implementation()
+    all_users = DBSession.query(Director).all()
+    headers = [column.name for column in Director.__table__.columns]
+
+    
+    return dict(title='View All Directors',
+                main=main ,
+                all_users = all_users,
+                headers = headers,
+                logged_in=authenticated_userid(request))
     
 @view_config(route_name='login', renderer='templates/login.pt')
 @forbidden_view_config(renderer='templates/login.pt')

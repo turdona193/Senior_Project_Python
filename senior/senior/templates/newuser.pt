@@ -1,6 +1,6 @@
 <div metal:use-macro="main.macros['template']">
     <div metal:fill-slot="content">
-    
+    	${message}
         <form method="post">
 
 			Login: <input type="text" name="username" value=""/><br/>
@@ -17,6 +17,12 @@
 			Day: <input type="text" name="day" value=""/><br/>
 			Month: <input type="text" name="month" value=""/><br/>
 			Year: <input type="text" name="year" value=""/><br/>
+			
+			Primary Language: <input type="text" name="primary_langauge" value=""/><br/>
+			Secondary Language: <input type="text" name="secondary_langauge" value=""/><br/>
+			Social Security Number: <input type="text" name="social_security" value=""/><br/>
+
+			
 			
 			Street: <input type="text" name="street" value=""/><br/>
 			City: <input type="text" name="city" value=""/><br/>

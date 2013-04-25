@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <title>SUNY Potsdam Campus Rescue Squad</title>
 
-<link rel="stylesheet" href="${request.static_url('senior:static/tinydropdown.css')}" type="text/css" />
+<link rel="stylesheet" href="${request.static_url('senior:static/style.css')}" type="text/css" />
 
 <!-- Thanks go to Michael for menu script
 Javascript Dropdown Menu
@@ -66,6 +66,8 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
         		<li><a href="/edit_patient"        >Edit Patient Information</a></li>
         		<li><a href="/view_patient"        >View your information</a></li>
         		<li><a href="/patient_history"     >Check Viewed History</a></li>
+        		<li><a href="/patient_history"     >Check Viewed History</a></li>
+        		
         	</ul>
         </li>
         <li><span>Medic</span>
@@ -96,6 +98,10 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
      			<li><a href="/admin_edit_patient" >Edit Patient</a></li>
      			<li><a href="/admin_edit_medic"   >Edit Medic</a></li>
      			<li><a href="/admin_edit_director">Edit Medical Director</a></li>
+                <li><a href="/view_all_users"     >View All Users</a></li>
+                <li><a href="/view_all_patients"  >View All Patients</a></li>
+                <li><a href="/view_all_medics"    >View All Medics</a></li>
+                <li><a href="/view_all_directors" >View All Directors</a></li>
      		</ul>
      	</li>
     </ul>
