@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:define-macro="template">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <title>SUNY Potsdam Campus Rescue Squad</title>
+
+<link rel="stylesheet" href="${request.static_url('senior:static/tinydropdown.css')}" type="text/css" />
+
+<!-- Thanks go to Michael for menu script
+Javascript Dropdown Menu
+April 18, 2013
+http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
+!-->
+<script type="text/javascript" src="${request.static_url('senior:static/tinydropdown.js')}"></script>
+
+<body>
+<div>
+<center>
+<table>
+	<tr>
+	<th rowspan="2"><div style="width: 175px"><font size="4" color="#020069" style="font-family:serif">${title}</font></div></th>
+	<th rowspan="2">
+	<!-- <img src="${request.static_url('senior:static/CRSbanner.jpg')}" alt="CRS Banner"/> --!>
+	</th>
+		<span tal:condition="logged_in">
+   			<td style="width:175px;text-align:center"><a href="/">${logged_in}</a></td>
+		</span>
+		<span tal:condition="not: logged_in">
+   			<td rowspan="2" style="width:175px;vertical-align:bottom;text-align:center"><a href="/login">Login</a></td>
+		</span>
+	</tr>
+	<tr>
+		<span tal:condition="logged_in">
+  			<td style="vertical-align:bottom;text-align:center"><a href="${request.application_url}/logout">Logout</a></td>
+		</span>	</tr>
+	</table>
+</center>
+</div>
+
+
+<div class="nav">
+    <ul id="menu" class="menu">
+        <li><span>Welcome</span>
+            <ul>
+                <li><a href="/"           >Home</a></li>
+                <li><a href="/about_us"   >About Us</a></li>
+                <li><a href="/contact_us" >Contact Us</a></li>      
+            </ul>
+        </li>
+        <li><span>User</span>
+            <ul>
+        		<li><a href="/why_create_user">Why Create a User Account</a></li>
+                <li><a href="/new_user"  >Create User</a></li>
+                <li><a href="/edit_user" >Edit User</a></li>
+                <li><a href="/view_user" >View Profile</a></li>
+            </ul>
+        </li>
+        
+        <li><span>Patient</span>
+        	<ul>
+        		<li><a href="/why_register_patient">Why Register as a Patient</a></li>
+        		<li><a href="/register_patient"    >Register as a Patient</a></li>
+        		<li><a href="/edit_patient"        >Edit Patient Information</a></li>
+        		<li><a href="/view_patient"        >View your information</a></li>
+        		<li><a href="/patient_history"     >Check Viewed History</a></li>
+        	</ul>
+        </li>
+        <li><span>Medic</span>
+        	<ul>
+        		<li><a href="/why_register_medic"   >Why Register as a Medic</a></li>
+        		<li><a href="/register_medic"       >Register as a Medic </a></li>
+        		<li><a href="/edit_medic"           >Edit Medic Information</a></li>
+        		<li><a href="/view_medic"           >View your information</a></li>
+        		<li><a href="/view_patient_as_medic">View Patient Information</a></li>
+        		<li><a href="/medic_history"        >Check View History</a></li>
+     		</ul>
+     	</li>
+     	<li><span>Medical Director</span>
+     		<ul>
+     			<li><a href="/why_register_director"    >Why Register as a Medical Director</a></li>
+     			<li><a href="/register_director"        >Register as a Medical Director</a></li>
+     			<li><a href="/edit_director"            >Edit Medical Director</a></li>
+     			<li><a href="/view_director"            >View Your Information</a></li>
+     			<li><a href="/view_patient_as_director" >View Patient Information</a></li>
+     			<li><a href="/view_patient_history"     >Check Medic View History </a></li>
+     			<li><a href="/view_medic_as_director"   >View Medic Information</a></li>
+     			<li><a href="/view_medic_history"       >Check Medic View History </a></li>
+     		</ul>
+     	</li>
+     	<li><span>Admin</span>
+     		<ul>
+     			<li><a href="/admin_edit_user"    >Edit User</a></li>
+     			<li><a href="/admin_edit_patient" >Edit Patient</a></li>
+     			<li><a href="/admin_edit_medic"   >Edit Medic</a></li>
+     			<li><a href="/admin_edit_director">Edit Medical Director</a></li>
+     		</ul>
+     	</li>
+    </ul>
+</div>
+<script type="text/javascript">
+var dropdown=new TINY.dropdown.init("dropdown", {id:'menu', active:'menuhover'});
+</script>
+
+<div class="main">
+    <div metal:define-slot="content">
+    </div>
+</div>
+
+
+</body>
+</html>

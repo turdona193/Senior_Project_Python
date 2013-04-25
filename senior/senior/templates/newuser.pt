@@ -1,0 +1,31 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+    
+        <form method="post">
+
+			Login: <input type="text" name="username" value=""/><br/>
+			Password: <input type="text" name="password" value=""/><br/>
+			First Name: <input type="text" name="firstname" value=""/><br/>
+			Middle Name: <input type="text" name="middlename" value=""/><br/>
+			Last Name: <input type="text" name="lastname" value=""/><br/>
+			Gender: 
+					<select name="gender">
+						<option value="Male"  >Male  </option>
+						<option value="Female">Female</option>
+					</select> <br/>
+			Birtday: <br/>
+			Day: <input type="text" name="day" value=""/><br/>
+			Month: <input type="text" name="month" value=""/><br/>
+			Year: <input type="text" name="year" value=""/><br/>
+			
+			Street: <input type="text" name="street" value=""/><br/>
+			City: <input type="text" name="city" value=""/><br/>
+			State: <input type="text" name="state" value=""/><br/>
+			Zipcode: <input type="text" name="zipcode" value=""/><br/>
+			Phone Number: <input type="text" name="phonenumber" value=""/><br/>
+			Email: <input type="text" name="email" value=""/><br/>
+			
+          <input type="submit" name="form.submitted" value="Add User"/>
+        </form>
+    </div>
+</div>

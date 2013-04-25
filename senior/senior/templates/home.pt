@@ -1,0 +1,7 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+		<p>		
+          ${page.data}
+		</p>
+    </div>
+</div>
