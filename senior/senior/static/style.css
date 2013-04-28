@@ -11,6 +11,7 @@ body {font:13px Verdana,Arial; color:#000; background:#fff}
 .menu ul li a, li.menuhover li a, li.menuhover li.menuhover li a {float:none; display:block; background:none; height:38px; padding-top:5px}
 .menu ul li a:hover, li.menuhover li a:hover, li.menuhover li.menuhover li a:hover {background:#48a627; color:#fff}
 .menu ul li span, li.menuhover li span, li.menuhover li.menuhover li span {float:none; display:block; background:none; height:38px; padding-top:5px}
+.menu ul span li {background:#48a627}
 .menu ul ul {left:120px; top:0}
 .menu li.submenu {font-weight:bold}
 .menu li.noborder {border-top:none}

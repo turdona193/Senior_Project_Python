@@ -44,7 +44,7 @@ def home(request):
     page = DBSession.query(Page).filter_by(name='Home').first()
 
     return dict(title='Home', main=main , page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='about_us', renderer='templates/home.pt')
 def about_us(request):
@@ -54,7 +54,7 @@ def about_us(request):
     return dict(title='About Us', 
                 main=main,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='contact_us', renderer='templates/home.pt')
 def contact_us(request):
@@ -64,7 +64,7 @@ def contact_us(request):
     return dict(title='Contact Us', 
                 main=main,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 
 @view_config(route_name='why_create_user', renderer='templates/home.pt')
@@ -75,7 +75,7 @@ def why_create_user(request):
     return dict(title='Why Create a User Account',
                 main=main ,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='new_user', renderer='templates/newuser.pt')
 def create_user(request):
@@ -109,11 +109,53 @@ def create_user(request):
             message = 'Login exists, please enter a different Login: {}'.format(exists)
 
     
-    return dict(title='Why Create a User Account',
+    return dict(title='Create a User Account',
                 main=main,
                 message=message,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
+@view_config(route_name='edit_user', renderer='templates/edituser.pt')
+def edit_user(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    edit_user = DBSession.query(User).filter(User.login == request.user['user_account'].login).first()
+
+    if 'form.submitted' in request.params:
+        edit_user.password = request.params['password']
+        edit_user.first_name = request.params['firstname']
+        edit_user.middle_name = request.params['middlename']
+        edit_user.last_name = request.params['lastname']
+        edit_user.gender = request.params['gender']
+        edit_user.birthday = datetime.date( int(request.params['year']), int(request.params['month']), int(request.params['day']) )
+        edit_user.primary_language = request.params['primary_langauge']
+        edit_user. secondary_language = request.params['secondary_langauge']
+        edit_user. social_security = request.params['social_security']
+        edit_user. street = request.params['street']
+        edit_user.city = request.params['city']
+        edit_user.state = request.params['state']
+        edit_user.zipcode = request.params['zipcode']
+        edit_user.phone = request.params['phonenumber']
+        edit_user.email = request.params['email']
+        DBSession.add(edit_user)
+        message = 'Account edited'
+
+    
+    
+    return dict(title = 'Edit User Account',
+                main = main,
+                message=message,
+                edit_user = edit_user,
+                user=request.user)
+
+@view_config(route_name='view_user', renderer='templates/viewuser.pt')
+def view_user(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    
+    return dict(title = 'Edit User Account',
+                main = main,
+                message=message,
+                user=request.user)
 
     
 @view_config(route_name='why_register_patient', renderer='templates/home.pt')
@@ -124,7 +166,7 @@ def why_register_patient(request):
     return dict(title='Why Register A Patient Account',
                 main=main ,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='why_register_medic', renderer='templates/home.pt')
 def why_register_medic(request):
@@ -134,7 +176,7 @@ def why_register_medic(request):
     return dict(title='Why Register A Medic Account',
                 main=main ,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='why_register_director', renderer='templates/home.pt')
 def why_register_director(request):
@@ -144,7 +186,7 @@ def why_register_director(request):
     return dict(title='Why Register A Medical Director Account',
                 main=main ,
                 page = page,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='view_all_users', renderer='templates/view_all_accounts.pt')
 def view_all_users(request):
@@ -156,7 +198,7 @@ def view_all_users(request):
                 main=main ,
                 all_users = all_users,
                 headers = headers,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='view_all_patients', renderer='templates/view_all_accounts.pt')
 def view_all_patients(request):
@@ -168,7 +210,7 @@ def view_all_patients(request):
                 main=main ,
                 all_users = all_users,
                 headers = headers,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='view_all_medics', renderer='templates/view_all_accounts.pt')
 def view_all_medics(request):
@@ -181,7 +223,7 @@ def view_all_medics(request):
                 main=main ,
                 all_users = all_users,
                 headers = headers,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='view_all_directors', renderer='templates/view_all_accounts.pt')
 def view_all_directors(request):
@@ -194,7 +236,7 @@ def view_all_directors(request):
                 main=main ,
                 all_users = all_users,
                 headers = headers,
-                logged_in=authenticated_userid(request))
+                user=request.user)
     
 @view_config(route_name='login', renderer='templates/login.pt')
 @forbidden_view_config(renderer='templates/login.pt')
@@ -211,9 +253,11 @@ def login(request):
     if 'form.submitted' in request.params:
         login = request.params['login']
         password = request.params['password']
-        if USERS.get(login) == password:
-            headers = remember(request, login)
-            return HTTPFound(location = came_from,
+        login_tried = DBSession.query(User.login, User.password).filter(User.login == login).first()
+        if login_tried:
+            if login_tried[1] == password:
+                headers = remember(request, login)
+                return HTTPFound(location = came_from,
                              headers = headers)
         message = 'Failed login'
 
@@ -225,7 +269,7 @@ def login(request):
         came_from = came_from,
         login = login,
         password = password,
-        logged_in=authenticated_userid(request))
+        user=request.user)
 
 @view_config(route_name='logout')
 def logout(request):

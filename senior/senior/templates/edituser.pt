@@ -1,0 +1,38 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+    	${message}
+        <form method="post">
+
+			Login: ${edit_user.login} <br/>
+			Password: <input type="text" name="password" value="${edit_user.password}"/><br/>
+			First Name: <input type="text" name="firstname" value="${edit_user.first_name}"/><br/>
+			Middle Name: <input type="text" name="middlename" value="${edit_user.middle_name}"/><br/>
+			Last Name: <input type="text" name="lastname" value="${edit_user.last_name}"/><br/>
+			Gender: 
+					<select name="gender">
+						<option value="Male">Male  </option>
+						<option value="Female">Female</option>
+
+					</select> <br/>
+			Birthday: <br/>
+			Day: <input type="text" name="day" value="${edit_user.birthday.day}" /><br/>
+			Month: <input type="text" name="month" value="${edit_user.birthday.month}"/><br/>
+			Year: <input type="text" name="year" value="${edit_user.birthday.year}"/><br/>
+			
+			Primary Language: <input type="text" name="primary_langauge" value="${edit_user.primary_language}"/><br/>
+			Secondary Language: <input type="text" name="secondary_langauge" value="${edit_user.secondary_language}"/><br/>
+			Social Security Number: <input type="text" name="social_security" value="${edit_user.social_security}"/><br/>
+
+			
+			
+			Street: <input type="text" name="street" value="${edit_user.street}"/><br/>
+			City: <input type="text" name="city" value="${edit_user.city}"/><br/>
+			State: <input type="text" name="state" value="${edit_user.state}"/><br/>
+			Zipcode: <input type="text" name="zipcode" value="${edit_user.zipcode}"/><br/>
+			Phone Number: <input type="text" name="phonenumber" value="${edit_user.phone}"/><br/>
+			Email: <input type="text" name="email" value="${edit_user.email}"/><br/>
+			
+          <input type="submit" name="form.submitted" value="Edit User"/>
+        </form>
+    </div>
+</div>

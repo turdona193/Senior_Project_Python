@@ -25,15 +25,15 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
 	<th rowspan="2">
 	<!-- <img src="${request.static_url('senior:static/CRSbanner.jpg')}" alt="CRS Banner"/> --!>
 	</th>
-		<span tal:condition="logged_in">
-   			<td style="width:175px;text-align:center"><a href="/">${logged_in}</a></td>
+		<span tal:condition="user">
+   			<td style="width:175px;text-align:center"><a href="/">${user['user_account'].login}</a></td>
 		</span>
-		<span tal:condition="not: logged_in">
+		<span tal:condition="not: user">
    			<td rowspan="2" style="width:175px;vertical-align:bottom;text-align:center"><a href="/login">Login</a></td>
 		</span>
 	</tr>
 	<tr>
-		<span tal:condition="logged_in">
+		<span tal:condition="user">
   			<td style="vertical-align:bottom;text-align:center"><a href="${request.application_url}/logout">Logout</a></td>
 		</span>	</tr>
 	</table>
@@ -54,8 +54,10 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
             <ul>
         		<li><a href="/why_create_user">Why Create a User Account</a></li>
                 <li><a href="/new_user"  >Create User</a></li>
-                <li><a href="/edit_user" >Edit User</a></li>
-                <li><a href="/view_user" >View Profile</a></li>
+                <span tal:condition = "user">
+                	<li><a href="/edit_user" >Edit User</a></li>
+                	<li><a href="/view_user" >View Profile</a></li>
+                </span>
             </ul>
         </li>
         
@@ -63,10 +65,12 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
         	<ul>
         		<li><a href="/why_register_patient">Why Register as a Patient</a></li>
         		<li><a href="/register_patient"    >Register as a Patient</a></li>
-        		<li><a href="/edit_patient"        >Edit Patient Information</a></li>
-        		<li><a href="/view_patient"        >View your information</a></li>
-        		<li><a href="/patient_history"     >Check Viewed History</a></li>
-        		<li><a href="/patient_history"     >Check Viewed History</a></li>
+        		<span tal:condition = "user and user['is_patient']">
+	        		<li><a href="/edit_patient"        >Edit Patient Information</a></li>
+	        		<li><a href="/view_patient"        >View your information</a></li>
+	        		<li><a href="/patient_history"     >Check Viewed History</a></li>
+	        		<li><a href="/patient_history"     >Check Viewed History</a></li>
+        		</span>
         		
         	</ul>
         </li>
@@ -74,22 +78,26 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
         	<ul>
         		<li><a href="/why_register_medic"   >Why Register as a Medic</a></li>
         		<li><a href="/register_medic"       >Register as a Medic </a></li>
-        		<li><a href="/edit_medic"           >Edit Medic Information</a></li>
-        		<li><a href="/view_medic"           >View your information</a></li>
-        		<li><a href="/view_patient_as_medic">View Patient Information</a></li>
-        		<li><a href="/medic_history"        >Check View History</a></li>
+        		<span tal:condition = "user and user['is_medic']">
+	        		<li><a href="/edit_medic"           >Edit Medic Information</a></li>
+	        		<li><a href="/view_medic"           >View your information</a></li>
+	        		<li><a href="/view_patient_as_medic">View Patient Information</a></li>
+	        		<li><a href="/medic_history"        >Check View History</a></li>
+        		</span>
      		</ul>
      	</li>
      	<li><span>Medical Director</span>
      		<ul>
      			<li><a href="/why_register_director"    >Why Register as a Medical Director</a></li>
      			<li><a href="/register_director"        >Register as a Medical Director</a></li>
-     			<li><a href="/edit_director"            >Edit Medical Director</a></li>
-     			<li><a href="/view_director"            >View Your Information</a></li>
-     			<li><a href="/view_patient_as_director" >View Patient Information</a></li>
-     			<li><a href="/view_patient_history"     >Check Medic View History </a></li>
-     			<li><a href="/view_medic_as_director"   >View Medic Information</a></li>
-     			<li><a href="/view_medic_history"       >Check Medic View History </a></li>
+        		<span tal:condition = "user and user['is_director']">
+	     			<li><a href="/edit_director"            >Edit Medical Director</a></li>
+	     			<li><a href="/view_director"            >View Your Information</a></li>
+	     			<li><a href="/view_patient_as_director" >View Patient Information</a></li>
+	     			<li><a href="/view_patient_history"     >Check Medic View History </a></li>
+	     			<li><a href="/view_medic_as_director"   >View Medic Information</a></li>
+	     			<li><a href="/view_medic_history"       >Check Medic View History </a></li>
+     			</span>
      		</ul>
      	</li>
      	<li><span>Admin</span>

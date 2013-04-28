@@ -3,7 +3,10 @@ from sqlalchemy import engine_from_config
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 
-from senior.security import groupfinder
+from senior.security import (
+    groupfinder,
+    get_user,
+    )
 
 
 from .models import (
@@ -24,6 +27,8 @@ def main(global_config, **settings):
     config.set_authorization_policy(authz_policy)
     
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_request_method(get_user, 'user', reify=True)
+
     
     config.add_route('home', '/')
     config.add_route('about_us','/about_us')
