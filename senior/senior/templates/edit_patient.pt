@@ -1,0 +1,12 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+    	${message}
+        <form method="post">
+
+			Login: ${edit_patient.user} <br/>
+			RFID: <input type="text" name="rfid" value="${edit_patient.rfidtag}"/><br/>
+			Primary Doctor <input type="text" name="doctor" value="${edit_patient.primary_physician}"/><br/>
+			<input type="submit" name="form.submitted" value="Edit Patient"/>
+        </form>
+    </div>
+</div>

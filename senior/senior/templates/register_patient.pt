@@ -1,0 +1,14 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+    	<b>${message}</b>
+        <form method="post">
+
+			Login: ${user['user_account'].login} <br/>
+			RFID: <input type="text" name="rfid" value=""/><br/>
+			Please scan RFID if you own a tag. <br/>
+			Primary Doctor:<input type="text" name="doctor" value=""/><br/>
+			<input type="hidden" name="username" value="${user['user_account'].login}"/>
+          <input type="submit" name="form.submitted" value="Register Patient"/>
+        </form>
+    </div>
+</div>

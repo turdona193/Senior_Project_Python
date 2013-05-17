@@ -1,0 +1,67 @@
+@startuml
+hide circle
+
+Allergy "0..n"->"1..1" User
+Medical_History "0..n" <- "1..1" User
+Patient "1..1"-->"1..1" User
+Medic "1..1"-->"1..1" User
+Director "1..1"-->"1..1" User
+Views "1..1"-->"2..2" User
+
+class Allergy{
+    user
+    allergy 
+}
+
+class Director{
+    user
+}
+
+class Medic{
+    user
+    training_level
+    cert_numbet
+}
+
+class Medical_History{
+    user
+    event
+}
+
+class Page{
+    id
+    name
+    data
+}
+
+class Patient{
+    user
+    rfidtag
+}
+
+class User{
+   login
+   password
+   first_name
+   middle_name
+   last_name
+   gender
+   birthday
+   primary_language
+   secondary_language
+   social_security
+   phone
+   street
+   city
+   state
+   zipcode
+   email
+}
+
+class Views{
+    patient
+    medic
+    time
+}
+
+@enduml

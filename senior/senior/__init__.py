@@ -29,29 +29,31 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_request_method(get_user, 'user', reify=True)
 
-    
+    # Home Scroll Down
     config.add_route('home', '/')
     config.add_route('about_us','/about_us')
     config.add_route('contact_us','/contact_us')
-    
+    # User Scroll Down
     config.add_route('why_create_user','/why_create_user')
     config.add_route('new_user','/new_user')
     config.add_route('edit_user','/edit_user')
     config.add_route('view_user','/view_user')
-                     
+    # Patient Scroll Down                 
     config.add_route('why_register_patient','/why_register_patient')
     config.add_route('register_patient','/register_patient')
     config.add_route('edit_patient','/edit_patient')
+    config.add_route('edit_allergies','/edit_allergies')
+    config.add_route('edit_history','/edit_history')
     config.add_route('view_patient','/view_patient')
     config.add_route('patient_history','/patient_history')
-                     
+    # Medic Scroll Down             
     config.add_route('why_register_medic','/why_register_medic')
     config.add_route('register_medic','/register_medic')
     config.add_route('edit_medic','/edit_medic')
     config.add_route('view_medic','/view_medic')
     config.add_route('view_patient_as_medic','/view_patient_as_medic')
     config.add_route('medic_history','/medic_history')
-                     
+    # Medical Director Scroll Down                  
     config.add_route('why_register_director','/why_register_director')
     config.add_route('register_director','/register_director')
     config.add_route('edit_director','/edit_director')
@@ -60,11 +62,7 @@ def main(global_config, **settings):
     config.add_route('view_patient_history','/view_patient_history')
     config.add_route('view_medic_as_director','/view_medic_as_director')
     config.add_route('view_medic_history','/view_medic_history')
-                     
-    config.add_route('admin_edit_user','/admin_edit_user')
-    config.add_route('admin_edit_patient','/admin_edit_patient')
-    config.add_route('admin_edit_medic','/admin_edit_medic')
-    config.add_route('admin_edit_director','/admin_edit_director')
+    # Admin Scroll Down                  
     config.add_route('view_all_users','/view_all_users')
     config.add_route('view_all_patients','/view_all_patients')
     config.add_route('view_all_medics','/view_all_medics')

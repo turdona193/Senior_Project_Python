@@ -1,0 +1,36 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        ${message}
+		<form>
+			<select name = 'selected_user'>
+	            <div tal:repeat = "use users_list">		
+				     <option value="${use}">${use}</option>
+				</div>
+			</select>
+			<input type="submit" name="select" value="Select"/>
+        </form>
+        <table border = 1>
+        
+		<div tal:condition = "form == 'select'">	
+            <tr><th>Login:</th><td>${user_data.login}</td></tr>
+            
+            <tr><th>Password:</th><td> ${user_data.password} </td></tr>
+            <tr><th>First Name:</th><td> ${user_data.first_name} </td></tr>
+            <tr><th>Middle Name:</th><td>${user_data.middle_name} </td></tr>
+            <tr><th>Last Name:</th><td> ${user_data.last_name} </td></tr>
+            <tr><th>Gender:</th><td> ${user_data.gender} </td></tr>
+            <tr><th>Birthday:</th><td> ${user_data.birthday.day} </td></tr>
+            
+            <tr><th>Primary Language:</th><td> ${user_data.primary_language}</td></tr>
+            <tr><th>Secondary Language:</th><td> ${user_data.secondary_language}</td></tr>
+            <tr><th>Social Security Number:</th><td>${user_data.social_security} </td></tr>
+    
+            <tr><th>Street:</th><td>${user_data.street}, ${user_data.city}, ${user_data.state} ${user_data.zipcode}</td></tr>
+            <tr><th>Phone Number:</th><td> ${user_data.phone} </td></tr>
+            <tr><th>Email:</th><td> ${user_data.email} </td></tr>
+			<tr><th>RFID Tag</th><td>${patient_data.rfidtag}</td></tr>
+            <tr><th>Doctor</th><td>${patient_data.primary_physician}</td></tr>
+        </div>
+		</table>
+    </div>
+</div>

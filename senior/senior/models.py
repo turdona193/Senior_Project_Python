@@ -4,6 +4,7 @@ from sqlalchemy import (
     Integer,
     Text,
     Date,
+    TIMESTAMP
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -45,7 +46,7 @@ class Allergy(Base):
 
 class Director(Base):
     __tablename__ = 'medical_director'
-    user = Column(Text, ForeignKey('patient.user'), primary_key=True)
+    user = Column(Text, ForeignKey('user.login'), primary_key=True)
     def __init__(self,user,):
         self.user = user
         
@@ -127,3 +128,15 @@ class User(Base):
         self.state = state
         self.zipcode = zipcode
         self.email = email
+        
+class Views(Base):
+    __tablename__ = 'views'
+    patient = Column(Text,ForeignKey('patient.user'))
+    medic = Column(Text,ForeignKey('medic.user'), primary_key=True)
+    time = Column(TIMESTAMP, primary_key=True)
+    
+    def __init__(self,patient,medic,time):
+        self.patient = patient
+        self.medic = medic
+        self.time = time
+    

@@ -1,0 +1,11 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        ${message}
+         <table border = 1>
+            <tr><th>Name: </th><td>${medic_data[3]}</td></tr>
+            <tr><th>User</th><td>${medic_data[0]}</td></tr>
+            <tr><th>Training Level</th><td>${medic_data[1]}</td></tr>
+            <tr><th>Certification Level</th><td>${medic_data[2]}</td></tr>
+        </table>      
+    </div>
+</div>

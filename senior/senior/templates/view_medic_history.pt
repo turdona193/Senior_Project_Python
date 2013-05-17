@@ -1,0 +1,24 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        Medic User Names:
+        <form>
+            <select name = 'selected_user'>
+                <div tal:repeat = "use users">     
+                     <option value="${use}">${use}</option>
+                </div>
+            </select>
+        <input type="submit" name="select" value="Select"/>
+
+        
+        <table border=1>
+            <tr>
+                <th>Patient</th><th>Medic</th><th>Time</th>
+            </tr>
+            <div tal:repeat = "view view_data">
+                <tr>
+                    <td>${view[0]}</td><td>${view[1]}</td><td>${view[2].strftime("%A %d. %B %Y, %H:$M")}</td>
+                </tr>   
+            </div>
+        </table>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 <div metal:use-macro="main.macros['template']">
     <div metal:fill-slot="content">
-	    <table>
+	    <table border = 1>
 	   		 <tr>
 				<div tal:repeat = "header headers">
 					<td>${header}</td>

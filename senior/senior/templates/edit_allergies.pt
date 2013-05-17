@@ -1,0 +1,31 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+    	<b>${message}</b>
+        <form>
+        	<div tal:condition = "not form">
+            <input type="submit" name="form.new" value="Add New Allergen"> <br/>
+			</div>
+			
+			<div tal:condition = "form">
+                New Allergen: <input type="text" name="new_allergen">
+				<input type="submit" name="form.submit" value="Add New Allergen"> <br/>
+            </div>
+			
+			<table border = 1>
+	            <tr><th>Current Allergies:</th></tr> 
+	            <div tal:repeat = "allergy allergies">
+	                <tr><td>${allergy[1]}</td></tr>
+	            </div>
+	        </table>
+			
+			<select name="edit_allergen">
+	            <div tal:repeat = "allergy allergies">
+	                <option value="${allergy}">${allergy[1]}</option>
+				</div>		
+			</select>
+			<input type="submit" name="form.delete" value="Delete an Allergen"><br/>
+			
+			
+		</form>
+    </div>
+</div>

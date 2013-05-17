@@ -5,8 +5,6 @@ from pyramid.response import Response
 from pyramid.renderers import get_renderer
 from .security import USERS
 
-
-
 from pyramid.view import (
     view_config,
     forbidden_view_config,
@@ -23,7 +21,6 @@ from pyramid.httpexceptions import (
     HTTPNotFound,
     )
 
-
 from sqlalchemy.exc import DBAPIError
 
 from .models import (
@@ -35,6 +32,7 @@ from .models import (
     Director,
     Allergy,
     MedicalHistory,
+    Views
     )
 
 
@@ -77,7 +75,7 @@ def why_create_user(request):
                 page = page,
                 user=request.user)
     
-@view_config(route_name='new_user', renderer='templates/newuser.pt')
+@view_config(route_name='new_user', renderer='templates/register_user.pt')
 def create_user(request):
     main = get_renderer('templates/template.pt').implementation()
     message = ''
@@ -114,7 +112,7 @@ def create_user(request):
                 message=message,
                 user=request.user)
     
-@view_config(route_name='edit_user', renderer='templates/edituser.pt')
+@view_config(route_name='edit_user', renderer='templates/edit_user.pt')
 def edit_user(request):
     main = get_renderer('templates/template.pt').implementation()
     message =''
@@ -147,12 +145,12 @@ def edit_user(request):
                 edit_user = edit_user,
                 user=request.user)
 
-@view_config(route_name='view_user', renderer='templates/viewuser.pt')
+@view_config(route_name='view_user', renderer='templates/view_user.pt')
 def view_user(request):
     main = get_renderer('templates/template.pt').implementation()
     message =''
     
-    return dict(title = 'Edit User Account',
+    return dict(title = 'View User Account',
                 main = main,
                 message=message,
                 user=request.user)
@@ -167,6 +165,194 @@ def why_register_patient(request):
                 main=main ,
                 page = page,
                 user=request.user)
+
+@view_config(route_name='register_patient', renderer='templates/register_patient.pt')
+def register_patient(request):
+    main = get_renderer('templates/template.pt').implementation()
+    
+    message = ''
+    if 'form.submitted' in request.params:
+        username_entered = request.params['username']
+        exists = DBSession.query(Patient).filter(Patient.user == username_entered).count()
+        if username_entered and not exists:
+            new_user = Patient(user = username_entered,
+                               rfidtag = request.params['rfid'],
+                               primary_physician = request.params['doctor'],
+                               )
+            DBSession.add(new_user)
+            message = 'Thank you for registering'
+        elif not username_entered:
+            message = 'Please enter a Login'
+        elif exists:
+            message = 'Patient Record exists for this user account, please sign into different account and contact an admin with any questions: {}'.format(exists)
+
+    return dict(title='Create a Patient Account',
+                main=main,
+                message=message,
+                user=request.user)
+    
+@view_config(route_name='edit_patient', renderer='templates/edit_patient.pt')
+def edit_patient(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    edit_patient = DBSession.query(Patient).filter(Patient.user == request.user['user_account'].login).first()
+
+    if 'form.submitted' in request.params:
+        rfidused = DBSession.query(Patient).filter(Patient.rfidtag==request.params['rfid'] and not Patient.user == request.user['user_account'].login).count()
+        if not rfidused:
+            edit_patient.rfidtag = request.params['rfid']
+            edit_patient.primary_physician = request.params['doctor']
+            DBSession.add(edit_patient)
+            message = 'Account edited'
+        if rfidused:
+            message = "RFID is used by different Patient"
+        
+        
+    return dict(title = 'Edit Patient Information',
+                main = main,
+                message=message,
+                edit_patient = edit_patient,
+                user=request.user)
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+@view_config(route_name='edit_allergies', renderer='templates/edit_allergies.pt')
+def edit_allergies(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    form = ''
+    username = request.user['user_account'].login
+        
+    if 'form.new' in request.params:
+        form = "new"
+
+    if 'form.delete' in request.params:
+        list = eval(request.params['edit_allergen'])
+        exist = DBSession.query(Allergy).filter_by(user = list[0]).filter_by(allergy = list[1]).first()
+        if exist:
+            DBSession.delete(exist)
+        if not exist:
+            message = "Sorry, but there seems to be a problem with the database, please contact your system administrator"
+
+
+    if 'form.submit' in request.params:
+        form = ''
+        list = [username,request.params['new_allergen']]
+        exist = DBSession.query(Allergy).filter_by(user = list[0]).filter_by(allergy = list[1]).first()
+        if not exist:
+            print("exist")
+            DBSession.add(
+                          Allergy(
+                                  user=list[0],
+                                  allergy=list[1]
+                                  )
+                          )
+        if exist:
+            print("exist")
+            message = "Allergen already exists for that user"
+        
+    allergies_query = DBSession.query(Allergy).filter(Allergy.user == username).all()
+    if allergies_query:
+        allergies_list = [[allergy.user, allergy.allergy] for allergy in allergies_query]
+    else:
+        allergies_list = [username,'Nothing']
+        
+        
+    return dict(title = 'Edit Allergies',
+                main = main,
+                message=message,
+                form=form,
+                allergies=allergies_list,
+                edit_patient = edit_patient,
+                user=request.user)    
+    
+@view_config(route_name='edit_history', renderer='templates/edit_history.pt')
+def edit_history(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    form = ''
+    username = request.user['user_account'].login
+        
+    if 'form.new' in request.params:
+        form = "new"
+
+    if 'form.delete' in request.params:
+        list = eval(request.params['edit_allergen'])
+        exist = DBSession.query(MedicalHistory).filter_by(user = list[0]).filter_by(event = list[1]).first()
+        if exist:
+            DBSession.delete(exist)
+        if not exist:
+            message = "Sorry, but there seems to be a problem with the database, please contact your system administrator"
+    if 'form.submit' in request.params:
+        list = [username,request.params['new_history']]
+        exist = DBSession.query(MedicalHistory).filter_by(user = list[0]).filter_by(event = list[1]).first()
+        if not exist:
+            print("exist")
+            DBSession.add(
+                          MedicalHistory(
+                                  user=list[0],
+                                  event=list[1]
+                                  )
+                          )
+        if exist:
+            message = "Event already exists for that user"
+            print("exist")
+    
+    
+    history_query = DBSession.query(MedicalHistory).filter(MedicalHistory.user == username).all()
+    if history_query:
+        i = 1
+        history_list = []
+        for history in history_query:
+            history_list.append([i,history.user, history.event])
+    else:
+        history_list = [0,username,'Nothing']
+
+        
+        
+    return dict(title = 'Edit Past Medical History',
+                main = main,
+                message=message,
+                form=form,
+                history=history_list,
+                user=request.user)    
+
+    
+
+    
+@view_config(route_name='view_patient', renderer='templates/view_patient.pt')
+def view_patient(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    patient = DBSession.query(Patient.user,
+                              Patient.rfidtag,
+                              Patient.primary_physician,
+                              User.first_name).\
+                              join(User).\
+                              filter(Patient.user == request.user['user_account'].login).one()
+    patient_data = [patient.user,patient.rfidtag,patient.primary_physician,patient.first_name]
+    
+    return dict(title = 'View Patient Account',
+                main = main,
+                message=message,
+                patient=patient,
+                user=request.user)
+    
+    
+    
+@view_config(route_name='patient_history', renderer='templates/patient_history.pt')
+def patient_history(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    view_list = DBSession.query(Views).\
+                              filter_by(patient = request.user['user_account'].login).all()
+    view_data = [[patient.patient,patient.medic,patient.time]for patient in view_list]
+    
+    return dict(title = 'Patient Viewed History',
+                main = main,
+                message=message,
+                view_data=view_data,
+                user=request.user)
     
 @view_config(route_name='why_register_medic', renderer='templates/home.pt')
 def why_register_medic(request):
@@ -178,6 +364,117 @@ def why_register_medic(request):
                 page = page,
                 user=request.user)
     
+@view_config(route_name='register_medic', renderer='templates/register_medic.pt')
+def register_medic(request):
+    main = get_renderer('templates/template.pt').implementation()
+    
+    message = ''
+    if 'form.submitted' in request.params:
+        username_entered = request.params['user']
+        exists = DBSession.query(Medic).filter(Medic.user == username_entered).count()
+        if username_entered and not exists:
+            new_user = Medic(user = username_entered,
+                               training_level = request.params['training_level'],
+                               cert_number = request.params['cert_number'],
+                               )
+            DBSession.add(new_user)
+            message = 'Thank you for registering'
+        elif not username_entered:
+            message = 'Please enter a Login'
+        elif exists:
+            message = 'Medic Record exists for this user account, please sign into different account and contact an admin with any questions: {}'.format(exists)
+
+    return dict(title='Create a Medic Account',
+                main=main,
+                message=message,
+                user=request.user)
+    
+    
+@view_config(route_name='edit_medic', renderer='templates/edit_medic.pt')
+def edit_medic(request):
+    main = get_renderer('templates/template.pt').implementation()
+    edit_user = DBSession.query(Medic).filter(Medic.user == request.user['user_account'].login).one()
+
+    message = ''
+    if 'form.submitted' in request.params:
+        username_entered = request.params['user']
+        edit_user.training_level = request.params['training_level'],
+        edit_user.cert_number = request.params['cert_number'],
+        DBSession.add(edit_user)
+        message = 'Medic Edited'
+        
+    return dict(title='Edit a Medic Account',
+                main=main,
+                message=message,
+                edit_user=edit_user,
+                user=request.user)
+    
+    
+@view_config(route_name='view_medic', renderer='templates/view_medic.pt')
+def view_medic(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    medic = DBSession.query(Medic.user,
+                              Medic.training_level,
+                              Medic.cert_number,
+                              User.first_name).\
+                              join(User).\
+                              filter(Medic.user == request.user['user_account'].login).one()
+    medic_data = [medic.user,medic.training_level,medic.cert_number,medic.first_name]
+    
+    return dict(title = 'View Medic Account',
+                main = main,
+                message=message,
+                medic_data=medic_data,
+                user=request.user)
+    
+@view_config(route_name='view_patient_as_medic', renderer='templates/view_patient_as_medic.pt')
+def view_patient_as_medic(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    patient = ['','']
+    form =''
+    users = DBSession.query(Patient.user).all()
+    users_list = [us.user for us in users]
+    
+    if 'selected_user' in request.params:
+        form = request.params['selected_user']
+        patient = DBSession.query(Patient,User).\
+                                  join(User).\
+                                  filter(Patient.user == form).first()
+        if patient:
+            form = 'select'
+            DBSession.add(
+                          Views(
+                                patient = patient[0].user,
+                                medic = request.user['user_account'].login,
+                                time = datetime.datetime.now()
+                                ))
+
+    
+    return dict(title = 'View Patient Account',
+                main = main,
+                message=message,
+                form=form,
+                patient_data=patient[0],
+                users_list=users_list,
+                user_data=patient[1],
+                user=request.user)
+    
+@view_config(route_name='medic_history', renderer='templates/medic_history.pt')
+def medic_history(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    view_list = DBSession.query(Views).\
+                              filter_by(medic = request.user['user_account'].login).all()
+    view_data = [[medic.patient,medic.medic,medic.time]for medic in view_list]
+    
+    return dict(title = 'Medic Viewing History',
+                main = main,
+                message=message,
+                view_data=view_data,
+                user=request.user)
+    
 @view_config(route_name='why_register_director', renderer='templates/home.pt')
 def why_register_director(request):
     main = get_renderer('templates/template.pt').implementation()
@@ -187,7 +484,171 @@ def why_register_director(request):
                 main=main ,
                 page = page,
                 user=request.user)
+
+@view_config(route_name='register_director', renderer='templates/register_director.pt')
+def register_director(request):
+    main = get_renderer('templates/template.pt').implementation()
     
+    message = ''
+    if 'form.submitted' in request.params:
+        username_entered = request.params['user']
+        exists = DBSession.query(Director).filter(Director.user == username_entered).count()
+        if username_entered and not exists:
+            new_user = Director(user = username_entered,
+                               
+                               )
+            DBSession.add(new_user)
+            message = 'Thank you for registering'
+        elif not username_entered:
+            message = 'Please enter a Login'
+        elif exists:
+            message = 'Medical Director Record exists for this user account, please sign into different account and contact an admin with any questions: {}'.format(exists)
+
+    return dict(title='Create a Medical Director Account',
+                main=main,
+                message=message,
+                user=request.user)
+
+
+
+@view_config(route_name='edit_director', renderer='templates/edit_director.pt')
+def edit_director(request):
+    main = get_renderer('templates/template.pt').implementation()
+    edit_user = DBSession.query(Director).filter(Director.user == request.user['user_account'].login).one()
+
+    message = ''
+    if 'form.submitted' in request.params:
+        username_entered = request.params['user']
+        DBSession.add(edit_user)
+        message = 'Medic Edited'
+        
+    return dict(title='Edit a Medical Director Account',
+                main=main,
+                message=message,
+                edit_user=edit_user,
+                user=request.user)
+
+@view_config(route_name='view_director', renderer='templates/view_director.pt')
+def view_director(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    medic = DBSession.query(Director.user,
+                              User.first_name).\
+                              join(User).\
+                              filter(Director.user == request.user['user_account'].login).one()
+    director_data = [medic.user,medic.first_name]
+    
+    return dict(title = 'View Medical Director Account',
+                main = main,
+                message=message,
+                director_data=director_data,
+                user=request.user)
+
+
+
+@view_config(route_name='view_patient_as_director', renderer='templates/view_patient_as_director.pt')
+def view_patient_as_director(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    patient = ['','']
+    form =''
+    users = DBSession.query(Patient.user).all()
+    users_list = [us.user for us in users]
+    
+    if 'selected_user' in request.params:
+        form = request.params['selected_user']
+        patient = DBSession.query(Patient,User).\
+                                  join(User).\
+                                  filter(Patient.user == form).first()
+        if patient:
+            form = 'select'
+            DBSession.add(
+                          Views(
+                                patient = patient[0].user,
+                                medic = request.user['user_account'].login,
+                                time = datetime.datetime.now()
+                                ))
+
+    
+    return dict(title = 'View Patient Account',
+                main = main,
+                message=message,
+                form=form,
+                patient_data=patient[0],
+                users_list=users_list,
+                user_data=patient[1],
+                user=request.user)
+    
+
+@view_config(route_name='view_patient_history', renderer='templates/view_patient_history.pt')
+def view_patient_history(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    view_data = []
+    users = DBSession.query(Patient.user).all()
+    users_list = [us.user for us in users]
+    
+    if 'select' in request.params:
+        name = request.params['selected_user']
+        view_list = DBSession.query(Views).\
+                                  filter_by(patient = name).all()
+        view_data = [[patient.patient,patient.medic,patient.time]for patient in view_list]
+    
+    return dict(title = 'Patient Viewed History',
+                main = main,
+                message=message,
+                users=users_list,
+                view_data=view_data,
+                user=request.user)
+
+
+
+@view_config(route_name='view_medic_as_director', renderer='templates/view_medic_as_director.pt')
+def view_medic_as_director(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    form = ''
+    medic = ['','']
+    users = DBSession.query(Medic.user).all()
+    users_list = [us.user for us in users]
+    
+    if 'select' in request.params:
+        form = request.params['selected_user']
+        medic = DBSession.query(Medic,User).\
+                                  join(User).\
+                                  filter(Medic.user == form).one()
+    
+    return dict(title = 'View Medic Account',
+                main = main,
+                message=message,
+                users=users_list,
+                form=form,
+                medic_data=medic[0],
+                user_data=medic[1],
+                user=request.user)
+
+
+@view_config(route_name='view_medic_history', renderer='templates/view_medic_history.pt')
+def view_medic_history(request):
+    main = get_renderer('templates/template.pt').implementation()
+    message =''
+    view_data = []
+    users = DBSession.query(Medic.user).all()
+    users_list = [us.user for us in users]
+    
+    if 'select' in request.params:
+        name = request.params['selected_user']
+        view_list = DBSession.query(Views).\
+                                  filter_by(medic = name).all()
+        view_data = [[medic.patient,medic.medic,medic.time]for medic in view_list]
+    
+    return dict(title = 'Medic Viewing History',
+                main = main,
+                message=message,
+                users=users_list,
+                view_data=view_data,
+                user=request.user)
+
 @view_config(route_name='view_all_users', renderer='templates/view_all_accounts.pt')
 def view_all_users(request):
     main = get_renderer('templates/template.pt').implementation()

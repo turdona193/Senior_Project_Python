@@ -1,0 +1,13 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        <b>${message}</b>
+        <form method="post">
+
+            Login: ${user['user_account'].login} <br/>
+            Training Level: <input type="text" name="training_level" value="${edit_user.training_level}"/><br/>
+            Certification Number: <input type="text" name="cert_number" value="${edit_user.cert_number}"/><br/>
+            <input type="hidden" name="user" value="${user['user_account'].login}"/>
+          <input type="submit" name="form.submitted" value="Edit Medic"/>
+        </form>
+    </div>
+</div>

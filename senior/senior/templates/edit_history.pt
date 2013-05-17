@@ -1,0 +1,31 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        <b>${message}</b>
+        <form>
+            <div tal:condition = "not form">
+            <input type="submit" name="form.new" value="Add New Medical Event"> <br/>
+            </div>
+            
+            <div tal:condition = "form">
+                New Medical Event: (Please add only one event at a time)<br/>
+				<textarea name="new_history" ></textarea>
+                <input type="submit" name="form.submit" value="Add New Medical Event"> <br/>
+            </div>
+			
+			<table border = 1>
+                <tr> <th>Index</th> <th>Past Medical History: </th> </tr> 
+                <div tal:repeat = "event history">
+                    <tr> <td>${event[0]}</td> <td>${event[2]}</td> </tr>
+                </div>
+            </table>
+			
+			<select name="edit_history">
+                <div tal:repeat = "event history">
+                    <option value="${event}">${event[0]}</option>
+                </div>      
+            </select>
+            <input type="submit" name="form.delete" value="Delete an Event"><br/>
+			
+		</form>
+	</div>
+</div>

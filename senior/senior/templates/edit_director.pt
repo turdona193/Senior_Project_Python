@@ -1,0 +1,12 @@
+<div metal:use-macro="main.macros['template']">
+    <div metal:fill-slot="content">
+        <b>${message}</b>
+        <form method="post">
+
+            Login: ${user['user_account'].login} <br/>
+            There will be additional fields required at a later date, we will contact you when the form is complete.  <br/>
+            <input type="hidden" name="user" value="${user['user_account'].login}"/>
+          <input type="submit" name="form.submitted" value="Edit Medical Director"/>
+        </form>
+    </div>
+</div>

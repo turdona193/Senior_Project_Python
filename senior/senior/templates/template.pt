@@ -23,7 +23,6 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
 	<tr>
 	<th rowspan="2"><div style="width: 175px"><font size="4" color="#020069" style="font-family:serif">${title}</font></div></th>
 	<th rowspan="2">
-	<!-- <img src="${request.static_url('senior:static/CRSbanner.jpg')}" alt="CRS Banner"/> --!>
 	</th>
 		<span tal:condition="user">
    			<td style="width:175px;text-align:center"><a href="/">${user['user_account'].login}</a></td>
@@ -52,23 +51,24 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
         </li>
         <li><span>User</span>
             <ul>
-        		<li><a href="/why_create_user">Why Create a User Account</a></li>
-                <li><a href="/new_user"  >Create User</a></li>
+        		<li><a href="/why_create_user"  >Why Create a User Account</a></li>
+                <li><a href="/new_user"         >Create User</a></li>
                 <span tal:condition = "user">
-                	<li><a href="/edit_user" >Edit User</a></li>
-                	<li><a href="/view_user" >View Profile</a></li>
+                	<li><a href="/edit_user"    >Edit User</a></li>
+                	<li><a href="/view_user"    >View Profile</a></li>
                 </span>
             </ul>
         </li>
         
         <li><span>Patient</span>
         	<ul>
-        		<li><a href="/why_register_patient">Why Register as a Patient</a></li>
-        		<li><a href="/register_patient"    >Register as a Patient</a></li>
+        		<li><a href="/why_register_patient"    >Why Register as a Patient</a></li>
+        		<li><a href="/register_patient"        >Register as a Patient</a></li>
         		<span tal:condition = "user and user['is_patient']">
 	        		<li><a href="/edit_patient"        >Edit Patient Information</a></li>
+					<li><a href="/edit_allergies"      >Edit Allergies</a></li>
+                    <li><a href="/edit_history"        >Edit Past Medical History</a></li>
 	        		<li><a href="/view_patient"        >View your information</a></li>
-	        		<li><a href="/patient_history"     >Check Viewed History</a></li>
 	        		<li><a href="/patient_history"     >Check Viewed History</a></li>
         		</span>
         		
@@ -76,8 +76,8 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
         </li>
         <li><span>Medic</span>
         	<ul>
-        		<li><a href="/why_register_medic"   >Why Register as a Medic</a></li>
-        		<li><a href="/register_medic"       >Register as a Medic </a></li>
+        		<li><a href="/why_register_medic"       >Why Register as a Medic</a></li>
+        		<li><a href="/register_medic"           >Register as a Medic </a></li>
         		<span tal:condition = "user and user['is_medic']">
 	        		<li><a href="/edit_medic"           >Edit Medic Information</a></li>
 	        		<li><a href="/view_medic"           >View your information</a></li>
@@ -88,8 +88,8 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
      	</li>
      	<li><span>Medical Director</span>
      		<ul>
-     			<li><a href="/why_register_director"    >Why Register as a Medical Director</a></li>
-     			<li><a href="/register_director"        >Register as a Medical Director</a></li>
+     			<li><a href="/why_register_director"        >Why Register as a Medical Director</a></li>
+     			<li><a href="/register_director"            >Register as a Medical Director</a></li>
         		<span tal:condition = "user and user['is_director']">
 	     			<li><a href="/edit_director"            >Edit Medical Director</a></li>
 	     			<li><a href="/view_director"            >View Your Information</a></li>
@@ -102,10 +102,6 @@ http://www.scriptiny.com/2011/04/javascript-dropdown-menu/
      	</li>
      	<li><span>Admin</span>
      		<ul>
-     			<li><a href="/admin_edit_user"    >Edit User</a></li>
-     			<li><a href="/admin_edit_patient" >Edit Patient</a></li>
-     			<li><a href="/admin_edit_medic"   >Edit Medic</a></li>
-     			<li><a href="/admin_edit_director">Edit Medical Director</a></li>
                 <li><a href="/view_all_users"     >View All Users</a></li>
                 <li><a href="/view_all_patients"  >View All Patients</a></li>
                 <li><a href="/view_all_medics"    >View All Medics</a></li>
